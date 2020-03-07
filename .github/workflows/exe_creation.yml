@@ -1,13 +1,11 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: Create EXE for Windows
 
 # Controls when the action will run. Triggers the workflow on push or pull request 
 # events but only for the master branch
 on:
   push:
-    branches: [ master ]
-  pull_request:
     branches: [ master ]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -31,5 +29,6 @@ jobs:
       run: |
         pip install cx_Freeze==5.0.0
         pip install idna
+        python exe_creation.py build
         echo Add other actions to build,
         echo test, and deploy your project.
