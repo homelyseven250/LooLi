@@ -30,7 +30,7 @@ jobs:
         pip install cx_Freeze==5.0.0
         pip install idna
         python exe_creation.py build
-        zip build.zip /build/*
+        zip -r build.zip build
         echo Add other actions to build,
         echo test, and deploy your project.
     - name: Upload artifact
