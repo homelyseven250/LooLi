@@ -2,6 +2,7 @@
 ###################################################################################################################
 #STARTUP CODE
 from random import *
+import pickle
 #set previous_startup to FALSE until files are implemented
 def startup():
     userfile = open("user.txt", "r")
@@ -9,12 +10,14 @@ def startup():
         #file will come predone with the contents "blank"
         userfile.close()
         welcome(True)
+    
     else:
         userfile.close()
         userfile = open("user.txt", "w")
         userfile.write("userfile")
         userfile.close()
         welcome(False)
+        input_data = []
 def welcome(previous_startup):
     if previous_startup == True:
         print("Hello, it looks like you've previously used LooLi, so let's get started!")
@@ -37,6 +40,7 @@ def setvars():
     global name
     global hasnickname
     global nickname
+    global input_count
     userfile = open("user.txt", "r")
     userfile.readline()
     name = userfile.readline()
@@ -48,6 +52,27 @@ def setvars():
     else:
         hasnickname = False
     userfile.close()
+    input_count = 0
+
+def user_input():
+    global last_input
+    global input_data
+    global input_count
+    input_count += 1
+    last_input = {"user_input":input(), "pos":input_count}    
+    upload_input_data(last_input)
+    
+
+def upload_input_data(data_to_upload):
+    input_data_file = open("input_data.pkl","rb")
+    old_file = pickle.load(input_data_file)
+    old_file.append(data_to_upload)
+    input_data_file.close()
+    input_data_file = open("input_data.pkl","wb")
+    pickle.dump(old_file,input_data_file)
+    input_data_file.close()
+
+    
     
 startup()
 setvars()
