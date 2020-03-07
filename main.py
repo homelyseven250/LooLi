@@ -59,11 +59,13 @@ def user_input():
     global input_data
     global input_count
     input_count += 1
-    last_input = {"user_input":input(), "pos":input_count}    
+    last_input = {"user_input":input() + " ", "pos":input_count}
     upload_input_data(last_input)
+    analyse(last_input)
     
 
 def upload_input_data(data_to_upload):
+    global old_file
     input_data_file = open("input_data.pkl","rb")
     old_file = pickle.load(input_data_file)
     old_file.append(data_to_upload)
@@ -72,7 +74,21 @@ def upload_input_data(data_to_upload):
     pickle.dump(old_file,input_data_file)
     input_data_file.close()
 
-    
+def reply(request):
+    print(request)
+    user_input()
+
+def analyse(request):
+    word_start = 0
+    for x in old_file:
+        letter_count = 0
+        for y in x["user_input"]:
+            letter_count+=1
+            if y == " ":
+                word = x["user_input"][int(word_start):letter_count]
+                word_start = letter_count
+                reply(word)
+            
     
 startup()
 setvars()
