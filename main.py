@@ -3,6 +3,7 @@
 #STARTUP CODE
 from random import *
 import pickle
+import fnmatch
 #set previous_startup to FALSE until files are implemented
 def startup():
     userfile = open("user.txt", "r")
@@ -77,9 +78,17 @@ def upload_input_data(data_to_upload):
 def reply(request):
     print(request)
     user_input()
+    
+def change_str_char(request, letter, number):
+    new = request[:number] + 'Z' + request[number+1:]
+    return new
 
 def analyse(request):
     word_start = 0
+    for loop in range(0, len(old_file)):
+        global input_only
+        input_only = []
+        input_only.append(old_file[loop]["user_input"])
     for x in old_file:
         letter_count = 0
         for y in x["user_input"]:
@@ -87,7 +96,13 @@ def analyse(request):
             if y == " ":
                 word = x["user_input"][int(word_start):letter_count]
                 word_start = letter_count
-                reply(word)
+                for word_count in range(0, len(request)):
+                          wordaslist = []
+                          wordaslist.append(change_str_char(request["user_input"], "*", word_count))
+                for processing_word in wordaslist:
+                    if fnmatch.filter(input_only, processing_word) != "":
+                        reply(x["user_input"])
+                                      
             
     
 startup()
