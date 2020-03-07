@@ -29,7 +29,7 @@ jobs:
     # Runs a set of commands using the runners shell
     - name: Run a multi-line script
       run: |
-        pip install cx_Freeze
+        pip install cx_Freeze==5.0.0
         pip install idna
         echo Add other actions to build,
         echo test, and deploy your project.
