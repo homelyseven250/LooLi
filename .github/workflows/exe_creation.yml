@@ -39,8 +39,8 @@ jobs:
         powershell Compress-Archive ./build build.zip
     - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
-        with:
-          # Artifact name
+      with:
+        # Artifact name
           name: build.zip
           # Directory containing files to upload
           path: .
