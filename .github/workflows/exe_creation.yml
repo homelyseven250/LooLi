@@ -23,13 +23,13 @@ jobs:
       uses: actions/setup-python@v1.1.1
       with:
           # Version range or exact version of a Python version to use, using semvers version range syntax.
-          python-version: 3.8
+          python-version: 3.6
           # The target architecture (x86, x64) of the Python interpreter.
           architecture: x64
           # Runs a set of commands using the runners shell
     - name: Install cx_Freeze and idna
       run: |
-        pip install cx_Freeze==5.0.0
+        pip install cx_Freeze
         pip install idna
     - name: Build EXE
       run: |
