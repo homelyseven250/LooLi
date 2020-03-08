@@ -13,28 +13,23 @@ jobs:
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
-
-    # Runs a single command using the runners shell
-    - name: Run a one-line script
-      run: echo Hello, world!
-
+      
     # Runs a set of commands using the runners shell
-    - name: Run a multi-line script
+    - name: Install cx_Freeze and idna
       run: |
-        pip install cx_Freeze==5.0.0
-        pip install idna
-        python exe_creation.py build
-        zip -r build.zip build
-        echo Add other actions to build,
-        echo test, and deploy your project.
-    - name: Upload artifact
+        python3 pip install cx_Freeze==5.0.0
+        python3 pip install idna
+    - name: Build EXE
+      run: |
+       python3 exe_creation.py build
+    - name: Upload exe as artifavt
       uses: actions/upload-artifact@v1.0.0
       with:
-       name: "build.zip"
-       path: "."
+       name: "*"
+       path: "./build"
