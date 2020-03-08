@@ -37,10 +37,28 @@ jobs:
     - name: Zip File Creation
       run: |
         powershell Compress-Archive ./build build.zip
-    - name: Upload asset to release
-      uses: actions-github/upload-to-release@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1.0.0
+        with:
+          # Artifact name
+          name: build.zip
+          # Directory containing files to upload
+          path: .
+    
+jobs:
+  upload:
+    name: Upload Zip 
+    runs-on: ubuntu-latest
+    - uses: actions/checkout@v2
+    - name: Download artifact
+      uses: actions/download-artifact@v1.0.0
       with:
-        file: './build.zip'
-        type: 'application/zip'
+        # Artifact name
+        name: build.zip
+    - name: Upload asset to release
+        uses: actions-github/upload-to-release@v1.0.0
+        with:
+          # Input file
+          file: build.zip 
+          # File type
+          type: application/zip
