@@ -42,6 +42,7 @@ def setvars():
     global hasnickname
     global nickname
     global input_count
+    global session_inputs
     userfile = open("user.txt", "r")
     userfile.readline()
     name = userfile.readline()
@@ -54,19 +55,41 @@ def setvars():
         hasnickname = False
     userfile.close()
     input_count = 0
+    session_inputs = []
+    
+def create_db_record():
+    global session_id_counter
+    global last_session_id_counter
+    global session_id
+    global session_file
+    global session_file_address
+    session_id_counter = open("./db/session_id_counter", "r")
+    last_session_id_counter = session_id_counter.read(1)
+    session_id_counter.close()
+    session_id_counter = open("./db/session_id_counter", "w")
+    session_id_counter.write(str(int(last_session_id_counter)+1))
+    session_id_counter.close()
+    session_id = int(last_session_id_counter)
+    session_file_address = "./db/sessions/"+str(session_id)+".pkl"
+    session_file = open(session_file_address, "wb")
+    session_file.close()
+
 
 def user_input():
     global last_input
     global input_data
     global input_count
+    global session_inputs
     input_count += 1
     last_input = {"user_input":input() + " ", "pos":input_count}
+    session_inputs.append(last_input)
     upload_input_data(last_input)
     analyse(last_input)
     
 
 def upload_input_data(data_to_upload):
     global old_file
+    global session_inputs
     input_data_file = open("input_data.pkl","rb")
     old_file = pickle.load(input_data_file)
     old_file.append(data_to_upload)
@@ -74,6 +97,8 @@ def upload_input_data(data_to_upload):
     input_data_file = open("input_data.pkl","wb")
     pickle.dump(old_file,input_data_file)
     input_data_file.close()
+    session_file = open(session_file_address, "wb")
+    pickle.dump(session_inputs, session_file)
 
 def reply(request):
     print(request)
@@ -107,6 +132,7 @@ def analyse(request):
     
 startup()
 setvars()
+create_db_record()
 user_input()
 #Next - add user input and basic GUI maybe!
         
