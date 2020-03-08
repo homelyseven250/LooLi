@@ -36,6 +36,8 @@ jobs:
        python exe_creation.py build
     - name: Zip File Creation
       run: |
+        mkdir export
+        cd export
         powershell Compress-Archive ./build build.zip
     - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
