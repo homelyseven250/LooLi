@@ -23,11 +23,11 @@ jobs:
     # Runs a set of commands using the runners shell
     - name: Install cx_Freeze and idna
       run: |
-        python3 pip install cx_Freeze==5.0.0
-        python3 pip install idna
+        python pip install cx_Freeze==5.0.0
+        python pip install idna
     - name: Build EXE
       run: |
-       python3 exe_creation.py build
+       python exe_creation.py build
     - name: Upload exe as artifavt
       uses: actions/upload-artifact@v1.0.0
       with:
