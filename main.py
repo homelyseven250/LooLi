@@ -107,5 +107,6 @@ def analyse(request):
     
 startup()
 setvars()
+user_input()
 #Next - add user input and basic GUI maybe!
         
