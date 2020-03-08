@@ -19,12 +19,18 @@ jobs:
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
-      
-    # Runs a set of commands using the runners shell
+    - name: Setup Python environment
+      uses: actions/setup-python@v1.1.1
+      with:
+          # Version range or exact version of a Python version to use, using semvers version range syntax.
+          python-version: 3.8
+          # The target architecture (x86, x64) of the Python interpreter.
+          architecture: x64
+          # Runs a set of commands using the runners shell
     - name: Install cx_Freeze and idna
       run: |
-        python pip install cx_Freeze==5.0.0
-        python pip install idna
+        pip install cx_Freeze==5.0.0
+        pip install idna
     - name: Build EXE
       run: |
        python exe_creation.py build
