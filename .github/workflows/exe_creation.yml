@@ -39,16 +39,22 @@ jobs:
     - name: Build Requirements.txt
       run: |
        pipreqs ./
+       mkdir requirements
+       move requirements.txt
        
-    - name: Zip File Creation
-      run: |
-        mkdir export
-        powershell Compress-Archive ./build build.zip
-        move build.zip ./export
     - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
       with:
         # Artifact name
           name: build.zip
           # Directory containing files to upload
-          path: ./export
+          path: ./build
+          
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        # Artifact name
+          name: requirements.txt
+          # Directory containing files to upload
+          path: ./requirements
+
