@@ -38,9 +38,9 @@ jobs:
        
     - name: Build Requirements.txt
       run: |
-       pipreqs ./
+       pipreqs ./ --force
        mkdir requirements
-       move requirements.txt
+       move requirements.txt ./requirements
        
     - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
