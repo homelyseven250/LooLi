@@ -27,13 +27,19 @@ jobs:
           # The target architecture (x86, x64) of the Python interpreter.
           architecture: x64
           # Runs a set of commands using the runners shell
-    - name: Install cx_Freeze and idna
+    - name: Install cx_Freeze and idna and pipreqs
       run: |
         pip install cx_Freeze
         pip install idna
+        pip install pipreqs
     - name: Build EXE
       run: |
        python exe_creation.py build
+       
+    - name: Build Requirements.txt
+      run: |
+       pipreqs ./
+       
     - name: Zip File Creation
       run: |
         mkdir export
