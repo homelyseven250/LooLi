@@ -56,6 +56,7 @@ def setvars():
     userfile.close()
     input_count = 0
     session_inputs = []
+    all_text = []
     
 def create_db_record():
     global session_id_counter
@@ -63,6 +64,9 @@ def create_db_record():
     global session_id
     global session_file
     global session_file_address
+    global all_inputs
+    global all_inputs_list
+    all_inputs_list = []
     session_id_counter = open("./db/session_id_counter", "r")
     last_session_id_counter = session_id_counter.read(1)
     session_id_counter.close()
@@ -73,15 +77,23 @@ def create_db_record():
     session_file_address = "./db/sessions/"+str(session_id)+".pkl"
     session_file = open(session_file_address, "wb")
     session_file.close()
+    all_text_file = open("./db/sessions/alltexts"+str(session_id)+".pkl", "wb")
+    pickle.dump([],all_text_file)
+    all_text_file.close()
+    print("SESSION ID: "+str(session_id))
 
 
 def user_input():
+    global all_inputs_file
     global last_input
     global input_data
     global input_count
     global session_inputs
+    global session_input_counter
+    global all_inputs_list
     input_count += 1
     last_input = {"user_input":input() + " ", "pos":input_count}
+    all_inputs_list.append(last_input["user_input"])
     session_inputs.append(last_input)
     upload_input_data(last_input)
     analyse(last_input)
@@ -90,6 +102,8 @@ def user_input():
 def upload_input_data(data_to_upload):
     global old_file
     global session_inputs
+    global all_inputs_list
+    global alll_inputs_file
     input_data_file = open("input_data.pkl","rb")
     old_file = pickle.load(input_data_file)
     old_file.append(data_to_upload)
@@ -99,8 +113,27 @@ def upload_input_data(data_to_upload):
     input_data_file.close()
     session_file = open(session_file_address, "wb")
     pickle.dump(session_inputs, session_file)
+    all_inputs_file = open("./db/datasets/all_inputs.pkl", "rb")
+    all_inputs_list = pickle.load(all_inputs_file)
+    all_inputs_file.close()
+    all_inputs_list.append(data_to_upload["user_input"])
+    all_inputs_file = open("./db/datasets/all_inputs.pkl", "wb")
+    pickle.dump(all_inputs_list,all_inputs_file)
+    all_inputs_file.close()
+
+def all_text_add():
+    global all_inputs_file
+    global all_inputs_list
+    all_inputs_file = open("./db/sessions/alltexts"+str(session_id)+".pkl", "rb")
+    all_inputs_file.close()
+    all_inputs_file = open("./db/sessions/alltexts"+str(session_id)+".pkl", "wb")
+    pickle.dump(all_inputs_list, all_inputs_file)
+    all_inputs_file.close()
 
 def reply(request):
+    global all_inputs_list
+    all_inputs_list.append(request)
+    all_text_add()
     print(request)
     user_input()
     
@@ -109,24 +142,23 @@ def change_str_char(request, letter, number):
     return new
 
 def analyse(request):
+    global all_inputs_list
+    ### V2 V2 V2 V2 ###
+    letter_count = 0
     word_start = 0
-    for loop in range(0, len(old_file)):
-        global input_only
-        input_only = []
-        input_only.append(old_file[loop]["user_input"])
-    for x in old_file:
-        letter_count = 0
-        for y in x["user_input"]:
+    for x in all_inputs_list:
+        current_processing = []
+        for y in x:
             letter_count+=1
             if y == " ":
-                word = x["user_input"][int(word_start):letter_count]
-                word_start = letter_count
-                for word_count in range(0, len(request)):
-                          wordaslist = []
-                          wordaslist.append(change_str_char(request["user_input"], "*", word_count))
-                for processing_word in wordaslist:
-                    if fnmatch.filter(input_only, processing_word) != "":
-                        reply(x["user_input"])
+                current_processing.append(x[word_start:letter_count])
+        for z in current_processing:
+            if z in request["user_input"]:
+                reply(all_inputs_list[all_inputs_list.index(x)+1])
+            
+                
+    
+                        
                                       
             
     
