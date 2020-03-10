@@ -1,9 +1,10 @@
 #All code copyright @gekepdp
 ###################################################################################################################
 #STARTUP CODE
-from random import *
+import random
 import pickle
 import fnmatch
+import string
 #set previous_startup to FALSE until files are implemented
 def startup():
     userfile = open("user.txt", "r")
@@ -11,7 +12,7 @@ def startup():
         #file will come predone with the contents "blank"
         userfile.close()
         welcome(True)
-    
+
     else:
         userfile.close()
         userfile = open("user.txt", "w")
@@ -57,7 +58,7 @@ def setvars():
     input_count = 0
     session_inputs = []
     all_text = []
-    
+
 def create_db_record():
     global session_id_counter
     global last_session_id_counter
@@ -66,6 +67,7 @@ def create_db_record():
     global session_file_address
     global all_inputs
     global all_inputs_list
+    global session_text_file
     all_inputs_list = []
     session_id_counter = open("./db/session_id_counter", "r")
     last_session_id_counter = session_id_counter.read(1)
@@ -77,9 +79,9 @@ def create_db_record():
     session_file_address = "./db/sessions/"+str(session_id)+".pkl"
     session_file = open(session_file_address, "wb")
     session_file.close()
-    all_text_file = open("./db/sessions/alltexts"+str(session_id)+".pkl", "wb")
-    pickle.dump([],all_text_file)
-    all_text_file.close()
+    session_text_file = open("./db/sessions/alltexts"+str(session_id)+".pkl", "wb")
+    pickle.dump([],session_text_file)
+    session_text_file.close()
     print("SESSION ID: "+str(session_id))
 
 
@@ -92,18 +94,20 @@ def user_input():
     global session_input_counter
     global all_inputs_list
     input_count += 1
-    last_input = {"user_input":input() + " ", "pos":input_count}
+    last_input = {"user_input":input().translate(None, string.punctuation).lower() + " ", "pos":input_count}
     all_inputs_list.append(last_input["user_input"])
     session_inputs.append(last_input)
     upload_input_data(last_input)
     analyse(last_input)
-    
+
 
 def upload_input_data(data_to_upload):
     global old_file
     global session_inputs
     global all_inputs_list
     global alll_inputs_file
+    global session_text_file
+    global session_text_list
     input_data_file = open("input_data.pkl","rb")
     old_file = pickle.load(input_data_file)
     old_file.append(data_to_upload)
@@ -120,8 +124,13 @@ def upload_input_data(data_to_upload):
     all_inputs_file = open("./db/datasets/all_inputs.pkl", "wb")
     pickle.dump(all_inputs_list,all_inputs_file)
     all_inputs_file.close()
+    session_text_file = open("./db/sessions/alltexts"+str(session_id)+".pkl", "rb")
+    session_text_list = pickle.load(session_text_file)
+    session_text_file.close()
+    session_text_file = open("./db/sessions/alltexts"+str(session_id)+".pkl", "wb")
+    pickle.dump(session_text_list, session_text_file)
 
-def all_text_add():
+def all_inputs_add():
     global all_inputs_file
     global all_inputs_list
     all_inputs_file = open("./db/sessions/alltexts"+str(session_id)+".pkl", "rb")
@@ -133,10 +142,10 @@ def all_text_add():
 def reply(request):
     global all_inputs_list
     all_inputs_list.append(request)
-    all_text_add()
+    all_inputs_add()
     print(request)
     user_input()
-    
+
 def change_str_char(request, letter, number):
     new = request[:number] + 'Z' + request[number+1:]
     return new
@@ -144,8 +153,10 @@ def change_str_char(request, letter, number):
 def analyse(request):
     global all_inputs_list
     ### V2 V2 V2 V2 ###
+    possible_responses = []
     letter_count = 0
     word_start = 0
+    enumeration_loop = 0
     for x in all_inputs_list:
         current_processing = []
         for y in x:
@@ -153,18 +164,19 @@ def analyse(request):
             if y == " ":
                 current_processing.append(x[word_start:letter_count])
         for z in current_processing:
-            if z in request["user_input"]:
-                reply(all_inputs_list[all_inputs_list.index(x)+1])
-            
-                
-    
-                        
-                                      
-            
-    
+            processing_inputs = [i for i, j in enumerate(current_processing) if j == request["user_input"]]
+            for a in processing_inputs:
+                if z in request["user_input"] or z in all_inputs_list[enumeration_loop + 1]:
+                    possible_responses.append(z)
+                    enumeration_loop+=1
+                print(possible_responses)
+                print(all_inputs_list)
+                reply(random.choice(possible_responses))
+                #Random response until response rating introduction
+
+
 startup()
 setvars()
 create_db_record()
 user_input()
 #Next - add user input and basic GUI maybe!
-        
