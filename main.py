@@ -94,11 +94,11 @@ def user_input():
     global session_input_counter
     global all_inputs_list
     input_count += 1
-    last_input = {"user_input":input().translate(None, string.punctuation).lower() + " ", "pos":input_count}
+    last_input = {"user_input":input().translate(string.punctuation).lower() + " ", "pos":input_count}
     all_inputs_list.append(last_input["user_input"])
     session_inputs.append(last_input)
-    upload_input_data(last_input)
     analyse(last_input)
+    upload_input_data(last_input)
 
 
 def upload_input_data(data_to_upload):
@@ -166,8 +166,8 @@ def analyse(request):
         for z in current_processing:
             processing_inputs = [i for i, j in enumerate(current_processing) if j == request["user_input"]]
             for a in processing_inputs:
-                if z in request["user_input"] or z in all_inputs_list[enumeration_loop + 1]:
-                    possible_responses.append(z)
+                for b in all_inputs_list[enumeration_loop - 1]:
+                    possible_responses.append(all_inputs_list[enumeration_loop - 1])
                     enumeration_loop+=1
                 print(possible_responses)
                 print(all_inputs_list)
