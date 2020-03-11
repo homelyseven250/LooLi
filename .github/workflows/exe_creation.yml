@@ -36,11 +36,14 @@ jobs:
       run: |
        python exe_creation.py build
        
-    - name: Build Requirements.txt
+    - name: Copy files
       run: |
-       pipreqs ./ --force
-       mkdir requirements
-       move requirements.txt ./requirements
+       copy "./db/*" ./build/exe.win-amd64-3.6/db
+       copy "./db/datasets/*" ./build/exe.win-amd64-3.6/db/datasets
+       copy "./db/sessions/*" ./build/exe.win-amd64-3.6/db/sessions
+       copy user.txt ./build/exe.win-amd64-3.6
+       copy input_data.pkl ./build/exe.win-amd64-3.6  
+       
        
     - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
@@ -48,13 +51,6 @@ jobs:
         # Artifact name
           name: build.zip
           # Directory containing files to upload
-          path: ./build
+          path: ./build/exe.win-amd64-3.6
           
-    - name: Upload artifact
-      uses: actions/upload-artifact@v1.0.0
-      with:
-        # Artifact name
-          name: requirements.txt
-          # Directory containing files to upload
-          path: ./requirements
 
