@@ -38,7 +38,7 @@ jobs:
        
     - name: Copy files
       run: |
-       copy ./db ./build/exe.win-amd64-3.6
+       copy db ./build/exe.win-amd64-3.6
        copy user.txt ./build/exe.win-amd64-3.6
        copy input_data.pkl ./build/exe.win-amd64-3.6  
        
